@@ -4,6 +4,7 @@ import guru.springframework.spring6restmvc.model.Beer;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -90,5 +91,59 @@ public class BeerServiceImpl implements BeerService {
                 .build();
         beerMap.put(savedBeer.getId(),savedBeer);
         return savedBeer;
+    }
+
+    @Override
+    public void updateBeerById(UUID beerId, Beer beer) {
+       Beer existingBeer = beerMap.get(beerId);
+       existingBeer.setBeerName(beer.getBeerName());
+       existingBeer.setBeerStyle(beer.getBeerStyle());
+       existingBeer.setPrice(beer.getPrice());
+       existingBeer.setUpc(beer.getUpc());
+       existingBeer.setUpdateDate(beer.getUpdateDate());
+       existingBeer.setCreatedDate(beer.getCreatedDate());
+       existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
+
+       beerMap.put(existingBeer.getId(),existingBeer);
+    }
+
+    @Override
+    public void deleteByID(UUID beerId) {
+        beerMap.remove(beerId);
+    }
+
+    @Override
+    public void updateBeerPatchById(UUID beerId, Beer beer) {
+        Beer exisiting = beerMap.get(beerId);
+
+        if(StringUtils.hasText(beer.getBeerName())){
+            exisiting.setBeerName(beer.getBeerName());
+        }
+
+        if(beer.getBeerStyle() != null){
+            exisiting.setBeerStyle(beer.getBeerStyle());
+        }
+
+        if(beer.getPrice() != null){
+            exisiting.setPrice(beer.getPrice());
+        }
+
+        if(beer.getQuantityOnHand() != null){
+            exisiting.setQuantityOnHand(beer.getQuantityOnHand());
+        }
+
+        if(StringUtils.hasText(beer.getUpc())){
+            exisiting.setUpc(beer.getUpc());
+        }
+
+        if(beer.getCreatedDate() != null){
+            exisiting.setCreatedDate(beer.getCreatedDate());
+        }
+
+        if(beer.getUpdateDate() != null){
+            exisiting.setUpdateDate(beer.getUpdateDate());
+        }
+
+        beerMap.replace(beerId,exisiting);
     }
 }
